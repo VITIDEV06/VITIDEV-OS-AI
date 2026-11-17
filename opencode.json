@@ -1,0 +1,77 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "memoria/personal/perfil.md",
+    "memoria/personal/preferencias.md",
+    "memoria/objetivos.md",
+    "memoria/proyectos/activos.md",
+    ".claude/rules/seguridad.md",
+    ".claude/rules/estilo.md",
+    ".claude/rules/memoria.md",
+    ".claude/rules/workspace.md"
+  ],
+  "skills": {
+    "paths": [".claude/skills"]
+  },
+  "permission": {
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow",
+      "*.env.sample": "allow",
+      "*.env.template": "allow",
+      "*.pem": "deny",
+      "*.key": "deny",
+      "*id_rsa*": "deny",
+      "*id_ed25519*": "deny",
+      "*secrets/*": "deny",
+      "*credenciales/*": "deny"
+    },
+    "edit": {
+      "*": "allow",
+      "*AGENTS.md": "ask",
+      "*CLAUDE.md": "ask",
+      "*opencode.json": "ask",
+      "*.claude/*": "ask",
+      "*.opencode/*": "ask",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*secrets/*": "deny",
+      "*credenciales/*": "deny"
+    },
+    "bash": {
+      "*": "ask",
+      "ls *": "allow",
+      "mkdir *": "allow",
+      "date *": "allow",
+      "node --test *": "allow",
+      "node scripts/validar.mjs *": "allow",
+      "npm test *": "allow",
+      "npm run validar *": "allow",
+      "git status *": "allow",
+      "git diff *": "allow",
+      "git log *": "allow",
+      "rm -rf *": "deny",
+      "rm -r *": "deny",
+      "rm -fr *": "deny",
+      "git push --force *": "deny",
+      "git push -f *": "deny",
+      "git reset --hard *": "deny",
+      "git clean *": "deny",
+      "sudo *": "deny"
+    },
+    "skill": {
+      "*": "allow",
+      "conocerme": "deny",
+      "estudiar": "deny",
+      "guardar": "deny",
+      "revisar-proyectos": "deny",
+      "cerrar-sesion": "deny"
+    },
+    "external_directory": "ask",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "doom_loop": "ask"
+  }
+}

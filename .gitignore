@@ -1,0 +1,62 @@
+# Configuración personal de Claude Code (no compartir)
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Secretos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+credenciales/
+
+# Archivos que OpenCode genera solo (SDK de plugins)
+.opencode/node_modules/
+.opencode/package.json
+.opencode/package-lock.json
+.opencode/bun.lock
+
+# Sistema
+node_modules/
+.DS_Store
+Thumbs.db
+
+# ---------------------------------------------------------------------------
+# Privacidad: datos personales que crean los comandos
+# Se versionan solo las plantillas y los README. Todo lo que el usuario crea
+# (aprendizajes, sesiones, proyectos, apuntes, informes, entregables) queda fuera.
+# Las plantillas versionadas de memoria/ (perfil, preferencias, objetivos,
+# proyectos, inbox) aparecen como modificadas al completarlas: revisa
+# `git status` antes de cada commit (ver SECURITY.md).
+# ---------------------------------------------------------------------------
+
+memoria/aprendizajes/*
+!memoria/aprendizajes/INDICE.md
+
+memoria/sesiones/*
+!memoria/sesiones/README.md
+
+workspace/proyectos/*
+!workspace/proyectos/README.md
+
+workspace/universidad/*
+!workspace/universidad/README.md
+
+workspace/investigaciones/*
+!workspace/investigaciones/README.md
+
+workspace/entregables/*
+!workspace/entregables/README.md
+
+workspace/inbox/*
+!workspace/inbox/README.md
+!workspace/inbox/ejemplo-notas-sueltas.md
+
+workspace/_archivo/*
+!workspace/_archivo/README.md
+
+# Copia privada completa: si usas este repositorio como tu sistema personal y
+# nunca vas a contribuir con cambios en memoria/ o workspace/, puedes descomentar:
+# memoria/
+# workspace/
