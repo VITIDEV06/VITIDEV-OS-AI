@@ -1,5 +1,5 @@
 {
-  "name": "vitidev-ia-os",
+  "name": "vitidev-os-ai",
   "version": "1.0.0",
   "description": "Entorno de trabajo personal con agentes de IA para Claude Code y OpenCode",
   "author": "Victor Montes (VITIDEV)",
@@ -12,7 +12,6 @@
   "scripts": {
     "test": "node --test tests/estructura.test.mjs tests/proteger.test.mjs tests/memoria.test.mjs tests/opencode.test.mjs",
     "validar": "node scripts/validar.mjs",
-    "sincronizar": "node scripts/sincronizar-agentes.mjs",
     "probar:opencode": "node scripts/probar-opencode.mjs"
   }
 }

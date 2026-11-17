@@ -23,8 +23,8 @@ Para un dato rápido que conoces con seguridad, responde directamente sin esta s
 
 1. **Acotar.** Si la pregunta es ambigua, reformúlala en 1–3 subpreguntas concretas
    y confírmalas con el usuario en una sola pregunta. Si es clara, continúa.
-2. **Delegar la búsqueda** en el agente `investigador` (herramienta de subagentes: `Agent` en Claude Code,
-   `task` en OpenCode; `subagent_type: investigador`), pasándole:
+2. **Delegar la búsqueda** en el agente `investigador` (herramienta `Agent`,
+   `subagent_type: investigador`), pasándole:
    la pregunta, las subpreguntas, el nivel del usuario (de `memoria/personal/perfil.md`)
    y el uso previsto (trabajo universitario, decisión, curiosidad).
    Si los agentes no están disponibles, haz tú los pasos 3–4 con las herramientas de búsqueda y lectura web.

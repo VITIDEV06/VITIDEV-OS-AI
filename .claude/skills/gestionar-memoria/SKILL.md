@@ -6,7 +6,7 @@ argument-hint: "[guardar|consultar|actualizar|olvidar] <dato o pregunta>"
 
 # Skill: gestionar memoria
 
-Eres responsable de que la memoria de VITIDEV IA OS sea **correcta, ordenada y del usuario**.
+Eres responsable de que la memoria de VITIDEV OS AI sea **correcta, ordenada y del usuario**.
 Mapa de archivos: `memoria/INDICE.md`. Reglas: `.claude/rules/memoria.md`.
 
 Petición recibida: $ARGUMENTS

@@ -1,4 +1,5 @@
-// Pruebas del hook de protección (PreToolUse).
+// Pruebas de protección: hook PreToolUse de Claude Code (.claude/hooks/lib/reglas.mjs)
+// y, con los mismos casos, la copia propia de OpenCode (.opencode/lib/reglas.mjs).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -6,6 +7,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { evaluar, esSecreto } from '../.claude/hooks/lib/reglas.mjs';
+import { evaluar as evaluarOC } from '../.opencode/lib/reglas.mjs';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const HOOK = path.join(RAIZ, '.claude/hooks/proteger.mjs');
@@ -70,6 +72,21 @@ test('bloquea el borrado de memoria en cualquier posición de comando', () => {
   ]) {
     assert.equal(bash(c), 'deny', `debería bloquear: ${c}`);
   }
+});
+
+test('OpenCode: su copia de las reglas aplica la misma política de seguridad', () => {
+  const bashOC = (command) => evaluarOC({ tool_name: 'Bash', tool_input: { command } }, RAIZ).decision;
+  const archivoOC = (tool_name, file_path) => evaluarOC({ tool_name, tool_input: { file_path } }, RAIZ).decision;
+  for (const c of ['rm -rf workspace', 'git push --force', 'Remove-Item -Path x -Recurse', 'cat .env', 'del memoria\\x.md']) {
+    assert.equal(bashOC(c), 'deny', `OpenCode debería bloquear: ${c}`);
+  }
+  for (const c of ['ls workspace', 'node -e "console.log(\'copia del modelo y la memoria\')"']) {
+    assert.equal(bashOC(c), 'allow', `OpenCode debería permitir: ${c}`);
+  }
+  assert.equal(archivoOC('Read', path.join(RAIZ, '.env')), 'deny');
+  assert.equal(archivoOC('Write', path.join(RAIZ, 'memoria/personal/perfil.md')), 'ask');
+  // La carpeta personal de Claude Code no es una excepción para OpenCode
+  assert.equal(archivoOC('Write', path.join(os.homedir(), '.claude', 'plans', 'p.md')), 'deny');
 });
 
 test('no confunde la palabra "del" de un texto con el comando del', () => {

@@ -1,4 +1,4 @@
-// Reglas de protección de VITIDEV IA OS.
+// Reglas de protección de VITIDEV OS AI.
 // Módulo puro (sin E/S salvo existsSync) para poder probarlo de forma aislada.
 // evaluar(entrada, dirProyecto) -> { decision: 'allow' | 'ask' | 'deny', motivo }
 
@@ -99,7 +99,7 @@ export function evaluar(entrada, dirProyecto) {
     const ruta = params.file_path || params.notebook_path || '';
     const secreto = esSecreto(ruta);
     if (secreto) {
-      return { decision: 'deny', motivo: `Bloqueado por seguridad: ${secreto} (${ruta}). VITIDEV IA OS no lee ni modifica secretos.` };
+      return { decision: 'deny', motivo: `Bloqueado por seguridad: ${secreto} (${ruta}). VITIDEV OS AI no lee ni modifica secretos.` };
     }
 
     if (herramienta !== 'Read' && ruta) {

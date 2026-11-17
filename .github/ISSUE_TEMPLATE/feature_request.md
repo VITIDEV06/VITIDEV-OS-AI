@@ -25,11 +25,11 @@ Antes de proponer, revisa el Roadmap del README y docs/decisiones.md por si ya s
 ## Posible impacto en la arquitectura
 
 - [ ] Solo documentación.
-- [ ] Skill nueva en `.claude/skills/` (compartida por ambas herramientas).
-- [ ] Agente nuevo en `.claude/agents/` (requiere `npm run sincronizar`).
-- [ ] Comando nuevo (skill de comando y envoltorio en `.opencode/commands/`).
+- [ ] Skill nueva (`.claude/skills/`, `.opencode/skills/` o ambas, como archivos separados).
+- [ ] Agente nuevo (`.claude/agents/`, `.opencode/agents/` o ambos).
+- [ ] Comando nuevo (skill de comando en Claude Code, `.opencode/commands/` en OpenCode).
 - [ ] Cambios en la memoria (`memoria/`) o en su estructura.
-- [ ] Cambios en la protección (`.claude/hooks/lib/reglas.mjs`, permisos).
+- [ ] Cambios en la protección (`.claude/hooks/lib/reglas.mjs`, `.opencode/lib/reglas.mjs`, permisos).
 - [ ] Afecta solo a Claude Code o solo a OpenCode.
 - [ ] Añade dependencias o servicios externos.
 

@@ -1,16 +1,21 @@
 # Limitaciones conocidas y estado de verificación
 
-Entorno de verificación: Windows 11, Node 24, 2026-11-16.
+Entorno de verificación: Windows 11, Node 24, Claude Code 2.1.326 y OpenCode 1.18.32.
+Última verificación: 2026-11-17, tras separar los dos ecosistemas.
 
 ## 1. Pruebas automáticas (sin modelo)
 
 | Prueba | Resultado |
 |---|---|
-| `npm run validar` (ambas implementaciones) | 0 errores |
-| `npm test` (30 pruebas: validador, hooks, memoria, adaptador y plugin de OpenCode, sincronización) | 30/30 |
-| `npm run probar:opencode` con OpenCode 1.18.32 (`opencode debug`) | 7/7 |
+| `npm run validar` (ambos ecosistemas e independencia) | 0 errores |
+| `npm test` (32 pruebas: validador, hooks, memoria, adaptador, plugin e independencia) | 32/32 |
+| `npm run probar:opencode` con OpenCode 1.18.32 (`opencode debug`) | 8/8 |
 
 ## 2. OpenCode 1.18.32: pruebas reales con un modelo
+
+> Estas pruebas se ejecutaron el 2026-11-16 con la arquitectura anterior (núcleo compartido,
+> decisiones D13–D18). Tras la separación (D20) se ha repetido la comprobación sin modelo
+> (`probar:opencode`, 8/8), pero **no** las pruebas con un modelo real.
 
 Ejecutadas con `opencode run` y el modelo gratuito `opencode/deepseek-v4.1-flash-free` (sin
 credenciales), sobre **copias temporales** del proyecto para no tocar la memoria real.
@@ -47,10 +52,7 @@ Los datos usados eran plantillas vacías y valores ficticios.
 | Sesión real de Claude Code abierta tras la v1.0 | Los 3 agentes aparecieron como tipos de subagente; el hook `SessionStart` inyectó el estado; el hook `PreToolUse` bloqueó en vivo `rm -rf` y `.env` |
 | Lógica de los hooks tras los cambios | Pruebas de integración de `proteger.mjs` y `session-start.mjs` (28/28) |
 | Skills compartidas tras normalizar sus secciones | Validador: nombres, frontmatter y secciones correctos |
-| `CLAUDE.md` con `@AGENTS.md` en una sesión **nueva** | **No verificado en vivo.** `claude -p` falla porque la sesión de la CLI caducó (`claude auth login`), y la sesión de escritorio usada cargó el `CLAUDE.md` anterior. El mecanismo es el mismo `@import` que ya cargaba la memoria y que sí se verificó |
-
-**Comprobación pendiente (1 minuto):** abre una sesión nueva de Claude Code en la carpeta y pregunta
-"¿cuáles son tus reglas no negociables?". Debe responder con la sección 5 de `AGENTS.md`.
+| `.claude/CLAUDE.md` en una sesión **nueva** (2026-11-17) | Verificado con `claude -p`: cita la primera línea de `.claude/CLAUDE.md`, ve el perfil importado con `@../memoria/...` y confirma que `AGENTS.md` **no** está en su contexto |
 
 ## 4. Limitaciones
 
@@ -59,17 +61,17 @@ Tras cambiar agentes, comandos, `settings.json` u `opencode.json`, abre una sesi
 
 **L2. Los subagentes no conversan.** Devuelven un resultado y terminan; por eso `/estudiar`
 imparte la clase desde el agente principal. Para una clase directa con el tutor: `claude --agent tutor`
-en Claude Code. En OpenCode V1 los agentes generados son `subagent` y no aparecen como agente principal.
+en Claude Code. En OpenCode V1 los agentes son `subagent` y no aparecen como agente principal.
 
 **L3. OpenCode V2 no está probado.** Según la guía oficial de migración, V2 lee el formato V1
-(`permission`, frontmatter de agentes, `skills.paths`, `commands/`) y `AGENTS.md`, pero:
+(`permission`, frontmatter de agentes, `commands/`) y `AGENTS.md`, pero:
 - los plugins de V1 **no se ejecutan**: en V2 se pierden el bloqueo en tiempo real y el resumen de
   estado; quedan las instrucciones y los permisos de `opencode.json`;
-- cambia el valor por defecto de `external_directory` (VITIDEV IA OS lo fija a `ask`, así que no afecta).
+- cambia el valor por defecto de `external_directory` (VITIDEV OS AI lo fija a `ask`, así que no afecta).
 Al pasar a V2 habrá que portar el plugin al nuevo formato y probarlo.
 
-**L4. `disable-model-invocation` en OpenCode V1.** Se ignora; se compensa con `permission.skill`
-(D16). Consecuencia: en OpenCode las 5 skills de comando solo se usan a través de sus comandos.
+**L4. `disable-model-invocation` en OpenCode V1.** Se ignora. Por eso OpenCode no tiene skills de
+comando: esos flujos son archivos de `.opencode/commands/` (D13–D18, D20).
 
 **L5. El cumplimiento de las skills depende del modelo.** Son instrucciones, no código. Las
 garantías duras están en los permisos y en el hook o plugin. Los modelos pequeños o gratuitos
@@ -85,9 +87,10 @@ ambas; su control depende de la regla "antes → después" de `gestionar-memoria
 **L8. El estado inicial en OpenCode usa un hook experimental** (`experimental.chat.system.transform`)
 y se añade en cada turno (con datos actualizados), no una sola vez.
 
-**L9. Skills globales del usuario.** OpenCode también carga las skills de `~/.claude/skills` del
-usuario (no son de VITIDEV IA OS). Si molestan: `OPENCODE_DISABLE_CLAUDE_CODE=1`, que
-VITIDEV IA OS soporta (D15).
+**L9. Descubrimiento de skills de Claude Code.** OpenCode descubre las skills de `.claude/skills/` y
+de `~/.claude/skills/` del usuario, y no hay opción en `opencode.json` para impedirlo. El agente no
+puede usarlas (`permission.skill` con `"*": "deny"`), pero siguen apareciendo en
+`opencode debug skill`. Para ocultarlas: `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` (D20).
 
 **L10. Archivos que crea OpenCode.** Al arrancar, OpenCode instala su SDK de plugins en
 `.opencode/node_modules` (requiere conexión la primera vez). Está ignorado por git. En una

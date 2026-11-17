@@ -1,6 +1,6 @@
 # Primeros pasos
 
-Guía para quien descarga VITIDEV IA OS por primera vez. En unos 20 minutos tendrás el sistema
+Guía para quien descarga VITIDEV OS AI por primera vez. En unos 20 minutos tendrás el sistema
 instalado, comprobado y con tu perfil creado.
 
 ```mermaid
@@ -52,26 +52,26 @@ node --version
 Permite actualizar con un solo comando más adelante.
 
 ```bash
-git clone https://github.com/VITIDEV06/VITIDEV-AI-OS.git
-cd VITIDEV-AI-OS
+git clone https://github.com/VITIDEV06/VITIDEV-OS-AI.git
+cd VITIDEV-OS-AI
 ```
 
 ### Opción B: descargar el ZIP
 
 1. En la página del repositorio, pulsa **Code → Download ZIP**.
 2. Descomprime el archivo en una carpeta tuya (por ejemplo, Documentos).
-3. Abre una terminal dentro de la carpeta descomprimida, `VITIDEV-AI-OS-master`.
+3. Abre una terminal dentro de la carpeta descomprimida, `VITIDEV-OS-AI-master`.
 
 Windows (PowerShell), si lo descomprimiste en Documentos:
 
 ```powershell
-cd "$HOME\Documents\VITIDEV-AI-OS-master"
+cd "$HOME\Documents\VITIDEV-OS-AI-master"
 ```
 
 Linux y macOS:
 
 ```bash
-cd ~/Documents/VITIDEV-AI-OS-master
+cd ~/Documents/VITIDEV-OS-AI-master
 ```
 
 ## 3. Comprueba el proyecto
@@ -100,7 +100,7 @@ cuando quieras.
 | **Protección en tiempo real** | Hook `PreToolUse` | Plugin `vitidev.js` (no funciona en V2) |
 | **Elígela si…** | Ya usas Claude o quieres su integración nativa | No tienes cuenta de pago o quieres elegir el modelo |
 
-> **Versiones:** OpenCode V2 está en beta y **no se ha probado** con VITIDEV IA OS. En V2 el plugin
+> **Versiones:** OpenCode V2 está en beta y **no se ha probado** con VITIDEV OS AI. En V2 el plugin
 > de protección de V1 no se ejecuta. Usa la rama 1.x de OpenCode. Detalle en [limitaciones.md](limitaciones.md).
 
 ### Instalar Claude Code
@@ -143,9 +143,9 @@ No hay que configurar nada para empezar. Lo que trae el proyecto:
 
 | Archivo | Qué configura | ¿Lo tocas al empezar? |
 |---|---|---|
-| `AGENTS.md` | Identidad y forma de trabajar del agente | No |
-| `CLAUDE.md` | Carga de `AGENTS.md` y de la memoria en Claude Code | No |
-| `opencode.json` | Memoria, reglas, skills y permisos en OpenCode | No |
+| `.claude/CLAUDE.md` | Instrucciones del agente y carga de la memoria en Claude Code | No |
+| `AGENTS.md` | Instrucciones del agente en OpenCode | No |
+| `opencode.json` | Memoria, reglas, allowlist de skills y permisos en OpenCode | No |
 | `.claude/settings.json` | Permisos y hooks en Claude Code | No |
 
 El modelo se elige en la herramienta, no en el proyecto:
@@ -230,8 +230,9 @@ Para ver el estado de todos tus proyectos y las prioridades de la semana:
 
 ## 10. Crea tu primera skill
 
-Una skill es un archivo Markdown con un procedimiento. Crea la carpeta `resumir-clase` dentro de
-`.claude/skills/` y, en ella, el archivo `SKILL.md`:
+Una skill es un archivo Markdown con un procedimiento. Cada herramienta tiene sus propias skills:
+crea la carpeta `resumir-clase` dentro de `.claude/skills/` (Claude Code) o de `.opencode/skills/`
+(OpenCode) y, en ella, el archivo `SKILL.md`:
 
 ```markdown
 ---
@@ -261,15 +262,15 @@ Un archivo de resumen y un mensaje con su ruta.
 ```
 
 Reglas: el campo `name` debe coincidir con el nombre de la carpeta, en `kebab-case` y sin acentos.
-La skill funciona en las dos herramientas sin copiarla. Después:
+En OpenCode, añade además `"resumir-clase": "allow"` en `permission.skill` de `opencode.json`; sin
+eso la skill queda denegada. Si la quieres en las dos herramientas, crea los dos archivos. Después:
 
 ```bash
 npm test
 ```
 
 Abre una sesión nueva (las herramientas cargan las skills al iniciar) y pide "resume mi clase".
-Para convertir una skill en comando o crear agentes, consulta la sección
-[Personalización del README](../README.md#personalización).
+Para crear comandos y agentes, consulta [CLAUDE-CODE.md](CLAUDE-CODE.md) y [OPENCODE.md](OPENCODE.md).
 
 ## 11. Comprueba que todo funciona
 
@@ -278,13 +279,13 @@ Para convertir una skill en comando o crear agentes, consulta la sección
 | Estructura | `npm run validar` | `0 error(es)` |
 | Pruebas | `npm test` | `fail 0` |
 | OpenCode (si lo usas) | `npm run probar:opencode` | Sin fallos |
-| Instrucciones cargadas | Pregunta "¿cuáles son tus reglas no negociables?" | Responde con las reglas de `AGENTS.md` |
+| Instrucciones cargadas | Pregunta "¿cuáles son tus reglas no negociables?" | Responde con las reglas de `.claude/CLAUDE.md` (Claude Code) o de `AGENTS.md` (OpenCode) |
 | Memoria | `/guardar` un dato, cierra la sesión, abre otra y pregunta por él | Lo recuerda y cita el archivo |
 | Protección | Pide "lee el archivo .env" | La acción se bloquea con una explicación |
 
 ## Siguientes lecturas
 
 - [Preguntas frecuentes](FAQ.md) y solución de problemas.
-- [Estructura del proyecto](ESTRUCTURA-DEL-PROYECTO.md): qué puedes tocar y qué no.
+- [Arquitectura](ARCHITECTURE.md): qué puedes tocar y qué no.
 - [Privacidad y memoria](PRIVACIDAD-Y-MEMORIA.md): qué se envía al proveedor del modelo.
 - [Glosario](GLOSARIO.md): conceptos de IA y de desarrollo explicados.

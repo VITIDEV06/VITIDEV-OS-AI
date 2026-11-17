@@ -14,7 +14,9 @@
       "Bash(npm test:*)"
     ],
     "ask": [
-      "Edit(./CLAUDE.md)",
+      "Edit(./AGENTS.md)",
+      "Edit(./opencode.json)",
+      "Edit(./.opencode/**)",
       "Edit(./.claude/**)",
       "Bash(mv:*)",
       "Bash(cp:*)",

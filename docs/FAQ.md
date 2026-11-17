@@ -5,7 +5,7 @@ consulta [Primeros pasos](PRIMEROS-PASOS.md) o abre un issue.
 
 ## Conceptos
 
-### ¿Qué es VITIDEV IA OS?
+### ¿Qué es VITIDEV OS AI?
 
 Un conjunto de archivos (instrucciones, reglas, skills, agentes, memoria y scripts de Node.js) que
 convierte Claude Code u OpenCode en un asistente personal: sabe quién eres, recuerda tus proyectos
@@ -15,15 +15,16 @@ operativo ni una aplicación con interfaz propia: se usa desde la herramienta de
 ### ¿Es un modelo de inteligencia artificial?
 
 No. No contiene ni entrena ningún modelo. El razonamiento lo hace el modelo de lenguaje que uses a
-través de Claude Code u OpenCode. VITIDEV IA OS aporta el **contexto** (quién eres, qué reglas
+través de Claude Code u OpenCode. VITIDEV OS AI aporta el **contexto** (quién eres, qué reglas
 seguir) y los **procedimientos** (skills y agentes).
 
 ### ¿Qué diferencia hay entre Claude Code y OpenCode?
 
 Son dos herramientas de agentes para la terminal. Claude Code es de Anthropic y usa modelos Claude.
-OpenCode es de código abierto y admite muchos proveedores. VITIDEV IA OS comparte con ambas las
-mismas instrucciones, skills, agentes y memoria; solo cambia un adaptador fino para cada una.
-Tabla completa en la sección [Compatibilidad del README](../README.md#compatibilidad).
+OpenCode es de código abierto y admite muchos proveedores. VITIDEV OS AI tiene una implementación
+independiente para cada una (instrucciones, reglas, skills, agentes y protección propios) y ambas
+comparten solo la memoria y el workspace. Tabla completa en la sección
+[Arquitectura del README](../README.md#arquitectura).
 
 ### ¿Qué modelo de IA puedo utilizar?
 
@@ -36,7 +37,7 @@ Ten en cuenta que los modelos pequeños o gratuitos siguen los procedimientos co
 
 ### ¿Necesito pagar por utilizarlo?
 
-VITIDEV IA OS es gratuito y de código abierto (licencia MIT). El coste depende del modelo:
+VITIDEV OS AI es gratuito y de código abierto (licencia MIT). El coste depende del modelo:
 
 - **Claude Code** requiere una suscripción de Claude o una clave de la API de Anthropic.
 - **OpenCode** funciona con modelos gratuitos (probado con uno de ellos) o con tu propio proveedor.
@@ -46,7 +47,7 @@ VITIDEV IA OS es gratuito y de código abierto (licencia MIT). El coste depende 
 No en el uso habitual: el modelo se ejecuta en los servidores del proveedor. Además, OpenCode
 descarga su SDK de plugins la primera vez que abre la carpeta. Los archivos de memoria, el validador
 y las pruebas (`npm test`) sí funcionan sin conexión. OpenCode permite configurar proveedores de
-modelos locales, pero esa combinación **no se ha probado** con VITIDEV IA OS.
+modelos locales, pero esa combinación **no se ha probado** con VITIDEV OS AI.
 
 ### ¿Puedo utilizarlo en Windows, Linux y macOS?
 
@@ -100,9 +101,11 @@ Para pausarlo o terminarlo, díselo al agente: moverá la entrada a `pausados.md
 
 ### ¿Cómo creo mis propias skills?
 
-Crea `.claude/skills/<nombre>/SKILL.md` con un frontmatter (`name` y `description`) y las secciones
-del procedimiento. Ejemplo completo en [Primeros pasos](PRIMEROS-PASOS.md#10-crea-tu-primera-skill).
-Una misma skill sirve para las dos herramientas.
+Cada herramienta tiene sus propias skills. Para Claude Code, crea `.claude/skills/<nombre>/SKILL.md`;
+para OpenCode, `.opencode/skills/<nombre>/SKILL.md` y añade `"<nombre>": "allow"` en
+`permission.skill` de `opencode.json`. Ambas llevan frontmatter (`name` y `description`) y las
+secciones del procedimiento. Ejemplo en [Primeros pasos](PRIMEROS-PASOS.md#10-crea-tu-primera-skill).
+Si la quieres en las dos herramientas, crea los dos archivos.
 
 ### ¿Cómo actualizo el sistema?
 
@@ -135,7 +138,7 @@ pruebas y enviar un Pull Request sin incluir datos personales.
 | No aparece un comando, skill o agente nuevo | Las herramientas cargan la configuración al iniciar | Abre una sesión nueva (L1) |
 | Claude Code no muestra el resumen de estado | No aceptaste confiar en la carpeta, o Node.js no está en el PATH | Reabre `claude` en la carpeta y acepta; comprueba `node --version` |
 | El primer `opencode` se queda sin respuesta | Está instalando el SDK de plugins | Espera, o ciérralo y repítelo (L10) |
-| OpenCode muestra skills que no son del proyecto | Carga también `~/.claude/skills` | Variable de entorno `OPENCODE_DISABLE_CLAUDE_CODE=1` (L9) |
+| OpenCode lista skills que no son del proyecto | Descubre también `.claude/skills` y `~/.claude/skills` (quedan denegadas por `permission.skill`) | Variable de entorno `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` (L9) |
 | OpenCode no responde o pide proveedor | No hay modelo elegido | `/models` o `opencode auth login` |
 | Mensaje "Bloqueado por seguridad: …" | La protección detectó un secreto o un comando destructivo | Es intencionado. Haz la acción tú mismo si es legítima |
 | En OpenCode no se puede reescribir un archivo de memoria | El plugin bloquea `write` sobre memoria existente | Es intencionado: el agente debe usar ediciones puntuales (L7) |

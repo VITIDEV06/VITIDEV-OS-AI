@@ -1,13 +1,11 @@
 # Reglas de seguridad
 
-Estas reglas se aplican siempre, en Claude Code y en OpenCode. Tienen tres capas de defensa:
+Reglas de Claude Code. Se aplican siempre y tienen tres capas de defensa:
 
 1. **Instrucciones** (este archivo): lo que el agente debe hacer.
-2. **Permisos** `allow` / `ask` / `deny` que aplica la herramienta:
-   `.claude/settings.json` (Claude Code) y `permission` en `opencode.json` (OpenCode).
-3. **Bloqueo en tiempo real** de lo que se escape a lo anterior, con la misma lógica
-   (`.claude/hooks/lib/reglas.mjs`): hook `proteger.mjs` en Claude Code y plugin
-   `.opencode/plugins/vitidev.js` en OpenCode.
+2. **Permisos** `allow` / `ask` / `deny` de `.claude/settings.json`.
+3. **Bloqueo en tiempo real** de lo que se escape a lo anterior: hook `PreToolUse`
+   (`.claude/hooks/proteger.mjs`, lógica en `.claude/hooks/lib/reglas.mjs`).
 
 ## Lectura
 
@@ -24,7 +22,8 @@ Estas reglas se aplican siempre, en Claude Code y en OpenCode. Tienen tres capas
 |---|---|
 | `memoria/**` | Permitido. Cambiar o eliminar un dato **existente** requiere aprobación (ver `memoria.md`). |
 | `workspace/**` | Permitido para crear y editar. Nunca borrar: mover a `workspace/_archivo/`. |
-| `CLAUDE.md`, `.claude/**` | Requiere aprobación: es la configuración del sistema. |
+| `.claude/**` | Requiere aprobación: es la configuración de Claude Code. |
+| `AGENTS.md`, `opencode.json` y carpeta `.opencode` | No los modifiques: pertenecen a OpenCode. |
 | Fuera del proyecto | No escribir. |
 
 ## Ejecución de comandos

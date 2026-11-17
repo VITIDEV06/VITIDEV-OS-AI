@@ -1,6 +1,6 @@
 # Privacidad y memoria
 
-Qué guarda VITIDEV IA OS, qué se envía al proveedor del modelo y cómo mantener tu información
+Qué guarda VITIDEV OS AI, qué se envía al proveedor del modelo y cómo mantener tu información
 bajo control. Resumen: **la memoria vive en tu disco, pero el modelo la recibe como contexto.**
 El proyecto no puede garantizar privacidad absoluta ni funcionamiento sin conexión.
 
@@ -19,7 +19,7 @@ El proyecto no puede garantizar privacidad absoluta ni funcionamiento sin conexi
 Todo es texto plano (Markdown), sin cifrar, con los permisos de tu usuario del sistema operativo.
 
 Fuera del proyecto, cada herramienta guarda además sus propios datos: credenciales del proveedor,
-configuración global e historial de sesiones. Eso lo gestionan Claude Code u OpenCode, no VITIDEV IA OS.
+configuración global e historial de sesiones. Eso lo gestionan Claude Code u OpenCode, no VITIDEV OS AI.
 
 ## Cómo funciona la memoria
 
@@ -44,10 +44,10 @@ flowchart LR
 
 | Capa | Origen | Cuándo |
 |---|---|---|
-| Instrucciones | `AGENTS.md` y `.claude/rules/` | Al iniciar |
+| Instrucciones | `.claude/CLAUDE.md` y `.claude/rules/` en Claude Code; `AGENTS.md` y `.opencode/rules/` en OpenCode | Al iniciar |
 | Memoria básica | Los cuatro archivos anteriores | Al iniciar |
 | Resumen de estado | Calculado a partir de `memoria/` y `workspace/inbox/` | Al iniciar (en OpenCode, en cada turno) |
-| Skills | `.claude/skills/` | La descripción, siempre; el procedimiento, al usarla |
+| Skills | `.claude/skills/` en Claude Code; `.opencode/skills/` en OpenCode | La descripción, siempre; el procedimiento, al usarla |
 | Archivos | Cualquier archivo que el agente lea | Durante la sesión |
 | Conversación | Tus mensajes y las respuestas | Durante la sesión |
 
@@ -67,7 +67,7 @@ en especial con modelos gratuitos.
 
 ## Memoria local frente a privacidad del proveedor
 
-| | Memoria local de VITIDEV IA OS | Proveedor del modelo |
+| | Memoria local de VITIDEV OS AI | Proveedor del modelo |
 |---|---|---|
 | **Dónde está** | En tu disco | En los servidores del proveedor |
 | **Quién la controla** | Tú: puedes leerla, editarla y borrarla | El proveedor, según sus condiciones |

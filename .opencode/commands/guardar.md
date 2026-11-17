@@ -1,11 +1,34 @@
 ---
-description: Guarda un dato en el archivo correcto de la memoria persistente (VITIDEV IA OS)
+description: "Comando rápido para guardar un dato en la memoria persistente. Clasifica el dato y lo guarda en el archivo correcto de memoria/ siguiendo la skill gestionar-memoria."
 ---
 
-Ejecuta el flujo `/guardar` de VITIDEV IA OS.
+<!-- Comando de OpenCode. Archivo propio: editarlo no cambia el comando homónimo de Claude Code. -->
 
-1. Lee el procedimiento de la skill `guardar` en `.claude/skills/guardar/SKILL.md` con la
-   herramienta de lectura (es una skill de comando: no se carga con la herramienta `skill`).
-2. Sigue su procedimiento. El dato que el usuario quiere guardar es: «$ARGUMENTS»
-3. Aplica la operación "Guardar" de la skill `gestionar-memoria`
-   (`.claude/skills/gestionar-memoria/SKILL.md`): nunca cambies un dato existente sin aprobación.
+# /guardar — Guardar información
+
+Dato: $ARGUMENTS
+
+## Objetivo
+
+Guardar un dato en la memoria con una sola orden del usuario, en el archivo correcto y sin duplicados.
+
+## Procedimiento
+
+1. Si no hay dato, pregunta: "¿Qué quieres que recuerde?"
+2. Si el dato parece un secreto (contraseña, token, número de tarjeta o de documento),
+   **no lo guardes**: explica por qué y sugiere un gestor de contraseñas.
+3. Sigue la operación **Guardar** de la skill `gestionar-memoria`
+   (`.opencode/skills/gestionar-memoria/SKILL.md`):
+   clasifica → lee el destino → añade, o propone el cambio si ya existía un valor distinto.
+4. Si el dato contiene varias piezas (por ejemplo, un objetivo y una preferencia),
+   guarda cada una en su archivo.
+5. Confirma en una línea por dato: `Guardado en memoria/<archivo> → <sección>`.
+
+## Reglas
+
+- Nunca guardes secretos.
+- Si el dato contradice uno existente, muestra antes → después y espera aprobación.
+
+## Resultado esperado
+
+El dato queda en el archivo de memoria correcto, sin duplicados y con la fecha actualizada.

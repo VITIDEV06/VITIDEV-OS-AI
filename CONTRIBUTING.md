@@ -1,4 +1,4 @@
-# Cómo contribuir a VITIDEV IA OS
+# Cómo contribuir a VITIDEV OS AI
 
 Gracias por querer mejorar el proyecto. Esta guía explica, paso a paso, cómo proponer cambios
 aunque sea tu primera contribución en GitHub. Al participar aceptas el
@@ -33,9 +33,9 @@ trabajar sin permisos especiales. Guía oficial: [Bifurcar un repositorio](https
 ### Clona tu fork
 
 ```bash
-git clone https://github.com/TU-USUARIO/VITIDEV-AI-OS.git
-cd VITIDEV-AI-OS
-git remote add upstream https://github.com/VITIDEV06/VITIDEV-AI-OS.git
+git clone https://github.com/TU-USUARIO/VITIDEV-OS-AI.git
+cd VITIDEV-OS-AI
+git remote add upstream https://github.com/VITIDEV06/VITIDEV-OS-AI.git
 ```
 
 `upstream` apunta al repositorio original y te permite traer sus cambios más tarde.
@@ -71,18 +71,23 @@ git checkout -b tipo/descripcion-corta
 
 ## 3. Respeta la arquitectura
 
-El proyecto tiene un **núcleo compartido** y dos **adaptadores finos**. Antes de editar, ubica tu
-cambio en esta tabla (el detalle está en [docs/ESTRUCTURA-DEL-PROYECTO.md](docs/ESTRUCTURA-DEL-PROYECTO.md)
-y los motivos en [docs/decisiones.md](docs/decisiones.md)):
+Claude Code y OpenCode son **ecosistemas independientes**: cada uno tiene sus propios archivos y
+ninguno referencia al otro. Solo `memoria/` y `workspace/` son comunes. Ubica tu cambio en esta tabla
+(detalle en [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) y motivos en
+[docs/decisiones.md](docs/decisiones.md)):
 
-| Quieres cambiar… | Edita | No edites |
+| Quieres cambiar… | Claude Code | OpenCode |
 |---|---|---|
-| Instrucciones comunes | `AGENTS.md` | Copias en `CLAUDE.md` |
-| Una skill | `.claude/skills/<nombre>/SKILL.md` | Copias en `.opencode/skills/` |
-| Un agente | `.claude/agents/<nombre>.md` y luego `npm run sincronizar` | `.opencode/agents/` a mano |
-| Un comando de OpenCode | `.opencode/commands/<nombre>.md` (solo envoltorio) | La lógica: va en la skill |
-| Protección | `.claude/hooks/lib/reglas.mjs` y su prueba | `proteger.mjs` o el plugin por separado |
-| Memoria cargada al iniciar | `CLAUDE.md` **y** `instructions` de `opencode.json` | Solo una de las dos |
+| Instrucciones | `.claude/CLAUDE.md` | `AGENTS.md` |
+| Reglas | `.claude/rules/` | `.opencode/rules/` (y `instructions` de `opencode.json`) |
+| Una skill | `.claude/skills/<nombre>/SKILL.md` | `.opencode/skills/<nombre>/SKILL.md` y su `allow` en `permission.skill` |
+| Un comando | Skill con `disable-model-invocation: true` | `.opencode/commands/<nombre>.md` |
+| Un agente | `.claude/agents/<nombre>.md` | `.opencode/agents/<nombre>.md` |
+| Protección | `.claude/hooks/lib/reglas.mjs` | `.opencode/lib/reglas.mjs` |
+| Memoria cargada al iniciar | Imports de `.claude/CLAUDE.md` | `instructions` de `opencode.json` |
+
+Si un cambio debe estar en las dos herramientas, hazlo en los dos lados. No uses imports, symlinks
+ni scripts que generen archivos de un ecosistema a partir del otro: `npm run validar` lo detecta.
 
 ### Convenciones
 
@@ -94,7 +99,7 @@ y los motivos en [docs/decisiones.md](docs/decisiones.md)):
   `Cuándo activarse`.
 - **Estilo:** sin emojis decorativos, frases cortas y tablas cuando comparen opciones.
 - **Código:** módulos ESM (`.mjs`), solo biblioteca estándar de Node.js, funciones puras en
-  `.claude/hooks/lib/` para poder probarlas.
+  `.claude/hooks/lib/` y `.opencode/lib/` para poder probarlas.
 
 ## 4. Documenta lo que añadas
 

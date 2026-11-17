@@ -1,6 +1,6 @@
 # Política de seguridad
 
-VITIDEV IA OS trabaja con información personal (perfil, objetivos, proyectos, apuntes) y con
+VITIDEV OS AI trabaja con información personal (perfil, objetivos, proyectos, apuntes) y con
 herramientas que pueden leer archivos y ejecutar comandos. Esta política explica qué proteger,
 cómo hacerlo y cómo informar de un problema.
 
@@ -25,7 +25,7 @@ una propuesta de corrección. **No incluyas secretos reales**: usa valores ficti
 Ejemplos de lo que se considera vulnerabilidad aquí:
 
 - Una forma de leer `.env`, claves o carpetas `secrets/` que el hook o el plugin no bloquean.
-- Un comando destructivo que escapa a `.claude/hooks/lib/reglas.mjs`.
+- Un comando destructivo que escapa a `.claude/hooks/lib/reglas.mjs` o a `.opencode/lib/reglas.mjs`.
 - Una configuración que permite a un agente escribir fuera del proyecto sin preguntar.
 - Un archivo versionado que expone datos personales o credenciales.
 
@@ -42,7 +42,7 @@ Ejemplos de lo que se considera vulnerabilidad aquí:
 
 ## API keys, tokens y variables de entorno
 
-- VITIDEV IA OS **no necesita ninguna clave dentro del proyecto**. `opencode.json` no declara modelo,
+- VITIDEV OS AI **no necesita ninguna clave dentro del proyecto**. `opencode.json` no declara modelo,
   proveedor ni credenciales, y `npm run validar` falla si alguien los añade.
 - Las credenciales se configuran en cada herramienta, fuera del repositorio:
   - Claude Code: inicio de sesión con tu cuenta o variable de entorno de tu sistema

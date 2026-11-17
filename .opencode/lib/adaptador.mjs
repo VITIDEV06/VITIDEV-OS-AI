@@ -1,7 +1,7 @@
-// Adaptador OpenCode -> reglas de VITIDEV IA OS.
+// Adaptador de OpenCode para .opencode/lib/reglas.mjs.
 // Traduce una llamada a herramienta de OpenCode (nombre en minúsculas y
-// argumentos en camelCase) al formato que entiende reglas.mjs (el de Claude Code),
-// para que ambas herramientas apliquen exactamente la misma política.
+// argumentos en camelCase) al formato interno de reglas.mjs (Read, Edit, Write, Bash, Grep),
+// para evaluar la política de protección de OpenCode.
 
 import { evaluar } from './reglas.mjs';
 
@@ -11,7 +11,7 @@ function rutasDeParche(texto) {
 }
 
 /**
- * Devuelve una lista de entradas en formato Claude Code para evaluar.
+ * Devuelve una lista de entradas en el formato interno de reglas.mjs.
  * Herramientas desconocidas devuelven [] (no se bloquean).
  */
 export function traducir(herramienta, args = {}) {

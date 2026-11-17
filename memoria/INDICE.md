@@ -1,11 +1,11 @@
 # Índice de la memoria
 
-La memoria de VITIDEV IA OS son archivos Markdown. Todo se puede leer y editar a mano.
+La memoria de VITIDEV OS AI son archivos Markdown. Todo se puede leer y editar a mano.
 Es **la misma** para Claude Code y OpenCode: lo que guardas con una herramienta lo ve la otra.
 
 | Archivo / carpeta | Contenido | ¿Se carga solo al iniciar? |
 |---|---|---|
-| [personal/perfil.md](personal/perfil.md) | Quién es el usuario | Sí (`CLAUDE.md` y `opencode.json`) |
+| [personal/perfil.md](personal/perfil.md) | Quién es el usuario | Sí (`.claude/CLAUDE.md` y `opencode.json`) |
 | [personal/preferencias.md](personal/preferencias.md) | Cómo quiere trabajar | Sí |
 | [objetivos.md](objetivos.md) | Metas a corto, medio y largo plazo | Sí |
 | [proyectos/activos.md](proyectos/activos.md) | Proyectos en curso | Sí |

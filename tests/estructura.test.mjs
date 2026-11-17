@@ -30,7 +30,7 @@ test('el validador detecta skills, agentes y referencias rotas', () => {
       '---\ntipo: inbox\n---\nVer `memoria/no-existe.md` y la skill `inventada`.\n');
     const { errores } = validar(tmp);
     const txt = errores.join('\n');
-    assert.match(txt, /Skill organizar: name "otra"/);
+    assert.match(txt, /Skill \.claude\/skills\/organizar: name "otra"/);
     assert.match(txt, /contiene ": " sin comillas/);
     assert.match(txt, /herramienta desconocida "Teletransportar"/);
     assert.match(txt, /instrucciones demasiado cortas/);

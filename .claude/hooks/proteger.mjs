@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Hook PreToolUse de VITIDEV IA OS.
+// Hook PreToolUse de VITIDEV OS AI.
 // Lee el evento JSON por stdin y decide:
 //   - deny  -> sale con código 2 y el motivo en stderr (Claude Code bloquea la herramienta)
 //   - ask   -> imprime JSON con permissionDecision "ask" (Claude Code pregunta al usuario)

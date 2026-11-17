@@ -1,14 +1,13 @@
-// Plugin de VITIDEV IA OS para OpenCode (formato de plugins de OpenCode V1).
-// Equivale a los dos hooks de Claude Code y reutiliza su misma lógica:
-//   - tool.execute.before  -> protección (igual que .claude/hooks/proteger.mjs)
-//   - experimental.chat.system.transform -> estado al iniciar (igual que session-start.mjs)
-// Sin dependencias. Este archivo solo debe tener el export por defecto:
-// OpenCode trata cada export como un plugin.
+// Plugin de VITIDEV OS AI para OpenCode (formato de plugins de OpenCode V1).
+//   - tool.execute.before               -> protección en tiempo real
+//   - experimental.chat.system.transform -> resumen de estado al iniciar
+// Usa solo módulos del ecosistema OpenCode (.opencode/lib/) y Node.js, sin dependencias.
+// Este archivo solo debe tener el export por defecto: OpenCode trata cada export como un plugin.
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { evaluarOpenCode } from '../../.claude/hooks/lib/opencode.mjs';
-import { calcularEstado, formatear } from '../../.claude/hooks/lib/estado.mjs';
+import { evaluarOpenCode } from '../lib/adaptador.mjs';
+import { calcularEstado, formatear } from '../lib/estado.mjs';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 

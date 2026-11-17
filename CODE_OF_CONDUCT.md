@@ -2,7 +2,7 @@
 
 ## Nuestro compromiso
 
-Quienes participamos en VITIDEV IA OS (como personas que contribuyen, revisan o mantienen el
+Quienes participamos en VITIDEV OS AI (como personas que contribuyen, revisan o mantienen el
 proyecto) nos comprometemos a que la participación sea una experiencia libre de acoso para
 todas las personas. Esto incluye a cualquier edad, tamaño corporal, discapacidad visible o
 invisible, etnia, características sexuales, identidad y expresión de género, nivel de experiencia,

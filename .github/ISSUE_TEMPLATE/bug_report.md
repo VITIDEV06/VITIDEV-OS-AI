@@ -26,7 +26,7 @@ Si el error es una vulnerabilidad de seguridad, no lo publiques aquí: sigue SEC
 | Herramienta | <!-- Claude Code u OpenCode --> |
 | Versión de la herramienta (`claude --version` u `opencode --version`) | |
 | Modelo utilizado (si aplica) | |
-| Versión de VITIDEV IA OS o commit | |
+| Versión de VITIDEV OS AI o commit | |
 
 ## Pasos para reproducirlo
 

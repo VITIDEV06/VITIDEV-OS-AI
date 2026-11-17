@@ -23,7 +23,7 @@ Guiar una sesión de estudio completa y medible (diagnóstico, explicación, pr�
      empieza por sus "Dudas pendientes" y "Preguntas de repaso".
    - ¿Pertenece a una materia o proyecto? Mira `workspace/universidad/` y `memoria/proyectos/activos.md`.
 2. **Diagnóstico:** una pregunta: "¿Qué sabes ya de <tema>, y para qué lo necesitas (examen, proyecto, curiosidad)?"
-3. **Preparar material con el agente `tutor`** (herramienta de subagentes: `Agent` en Claude Code, `task` en OpenCode; `subagent_type: tutor`). Pásale:
+3. **Preparar material con el agente `tutor`** (herramienta `Agent`, `subagent_type: tutor`). Pásale:
    tema, nivel detectado, objetivo, tiempo disponible, preferencias de aprendizaje y
    (si es repaso) el contenido del archivo de aprendizaje previo.
    Pídele: plan de la sesión por bloques, explicación por capas, 3–5 preguntas de práctica

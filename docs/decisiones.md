@@ -1,6 +1,6 @@
 # Decisiones técnicas
 
-Registro breve de las decisiones de diseño de VITIDEV IA OS v1.0, con su motivo y las
+Registro breve de las decisiones de diseño de VITIDEV OS AI v1.0, con su motivo y las
 alternativas descartadas.
 
 ## D1. Solo mecanismos nativos de cada herramienta
@@ -86,64 +86,40 @@ existen, herramientas de agente inventadas).
 **Motivo:** el público del taller es hispanohablante; los nombres sin acentos evitan
 problemas de codificación entre sistemas operativos y en la línea de comandos.
 
-## D13. Compatibilidad con OpenCode: núcleo compartido + adaptadores finos
-**Decisión:** no duplicar contenido. Lo compartido (instrucciones, reglas, skills, prompts de
-agentes, lógica de protección y de estado, memoria) existe una vez; cada herramienta tiene solo
-un adaptador (`CLAUDE.md` + `.claude/settings.json` + hooks; `opencode.json` + `.opencode/`).
-**Motivo:** dos copias divergen; con una sola, una mejora sirve a ambas herramientas.
-
-## D14. `AGENTS.md` como fuente única de instrucciones
-**Decisión:** el contenido común va en `AGENTS.md`. `CLAUDE.md` lo importa con `@AGENTS.md` y
-añade solo lo propio de Claude Code.
-**Comprobado en la documentación oficial (2026-11-16):**
-- OpenCode V1 carga `AGENTS.md` y solo usa `CLAUDE.md` como respaldo si no hay `AGENTS.md`
-  (así que no se cargan los dos). OpenCode V2 solo descubre `AGENTS.md`.
-- OpenCode **no** interpreta las referencias `@archivo` dentro de `AGENTS.md`; recomienda el campo
-  `instructions` de `opencode.json`. Por eso la memoria se carga con `@` en `CLAUDE.md` y con
-  `instructions` en OpenCode, y el validador exige que ambas listas coincidan.
-- Claude Code no lee `AGENTS.md` por sí solo; el import `@AGENTS.md` lo resuelve.
-**Descartado:** generar `CLAUDE.md` desde `AGENTS.md` con un script (un paso más que olvidar)
-o un enlace simbólico (poco fiable en Windows y en git).
-
-## D15. Las skills se comparten desde `.claude/skills/`, sin copiarlas a `.opencode/skills/`
-**Decisión:** OpenCode lee `.claude/skills/` de forma nativa (comprobado con `opencode debug skill`).
-Además se registran en `skills.paths` de `opencode.json`.
-**Motivo del registro explícito:** con `OPENCODE_DISABLE_CLAUDE_CODE=1` OpenCode deja de leer
-`.claude/skills` (comprobado); el registro hace que funcionen igual. Mismo id y mismo archivo:
-no hay conflicto. `.opencode/skills/` queda reservada para skills exclusivas de OpenCode,
-y el validador prohíbe que repitan un id de `.claude/skills/`.
-**Descartado:** copiar las skills (duplicación) o moverlas a `.agents/skills/` (Claude Code no lee esa carpeta).
-
-## D16. Skills de comando ocultas en OpenCode mediante permisos
-**Problema:** OpenCode 1.18.32 **ignora** `disable-model-invocation` (comprobado: el modelo veía
-`conocerme`, `guardar`… en su lista de skills). La documentación de V2 sí lo menciona.
-**Decisión:** `permission.skill` deniega las 5 skills de comando y los archivos de
-`.opencode/commands/` leen su `SKILL.md` con la herramienta de lectura, sin la herramienta `skill`.
-**Resultado:** mismo comportamiento que en Claude Code: solo el usuario lanza esos flujos.
-
-## D17. Agentes de OpenCode generados, no escritos a mano
-**Decisión:** `.claude/agents/*.md` es la fuente; `npm run sincronizar` genera `.opencode/agents/*.md`
-copiando el cuerpo y la descripción y traduciendo `tools` a `permission` (V1):
-lo que no está en `tools` queda denegado; además `task`, `skill` y `external_directory` se deniegan.
-No se declara `model`: el subagente hereda el de la sesión (documentado por OpenCode).
-**Motivo:** los formatos de metadatos son incompatibles (Claude: `tools`; OpenCode: `mode` y
-`permission`), pero el prompt debe ser idéntico. El validador y las pruebas fallan si divergen.
-**Por qué no se usan los campos de V2** (`permissions`, `steps`): OpenCode V1 no los entiende y V2
-lee el formato V1 (guía oficial de migración).
-
-## D18. Protección en OpenCode con un plugin que reutiliza `reglas.mjs`
-**Decisión:** `.opencode/plugins/vitidev.js` (autodescubierto) usa `tool.execute.before` para
-bloquear (lanza un error) con la misma lógica que el hook de Claude Code, a través de un
-adaptador (`.claude/hooks/lib/opencode.mjs`) que traduce nombres y argumentos de herramientas.
-También añade el resumen de estado con `experimental.chat.system.transform`.
-**Motivo:** los permisos por patrón no cubren variantes (`Remove-Item -Recurse`, `cat .env`) ni
-la sobrescritura completa de memoria. Un plugin no puede "preguntar", así que la decisión
-"preguntar" de Claude Code se convierte en bloqueo con una explicación.
-**Riesgo aceptado:** el hook de sistema es experimental en V1 y los plugins de V1 no se ejecutan
-en V2; en ese caso quedan las capas 1 y 2 (instrucciones y `permission`).
+## D13–D18. Núcleo compartido entre herramientas (sustituidas por D20)
+La primera versión compartía un núcleo entre Claude Code y OpenCode: `AGENTS.md` importado desde
+`CLAUDE.md` con `@AGENTS.md`, skills leídas por OpenCode desde `.claude/skills/` (`skills.paths`),
+agentes de OpenCode generados con un script de sincronización, y un plugin que reutilizaba la lógica
+de `.claude/hooks/lib/`. D20 sustituye ese diseño. Siguen vigentes dos hallazgos:
+- OpenCode 1.18.32 **ignora** `disable-model-invocation`: un flujo que solo debe lanzar el usuario
+  se implementa en OpenCode como comando (`.opencode/commands/`), no como skill.
+- Un plugin de OpenCode no puede "preguntar": la decisión "ask" de las reglas se convierte en
+  bloqueo con una explicación (`.opencode/lib/adaptador.mjs`).
 
 ## D19. Sin modelo ni proveedor en el proyecto
 **Decisión:** `opencode.json` no contiene `model`, `provider` ni credenciales, y los agentes no
 declaran `model`. El validador lo impide.
 **Motivo:** cada usuario usa su propio proveedor (incluidos los modelos gratuitos de OpenCode)
 sin modificar el proyecto.
+
+## D20. Ecosistemas independientes para Claude Code y OpenCode
+**Decisión:** cada herramienta tiene sus propios archivos y ninguna referencia a la otra.
+Claude Code usa solo `.claude/` (instrucciones en `.claude/CLAUDE.md`); OpenCode usa solo
+`AGENTS.md`, `opencode.json` y `.opencode/` (reglas, skills, comandos, agentes, plugin y
+`lib/`). Solo `memoria/` y `workspace/` son comunes, porque son datos del usuario.
+**Motivo:** con un núcleo compartido, un cambio pensado para una herramienta alteraba la otra, y no
+se podía adaptar una skill o una regla a las capacidades de cada una.
+**Cómo se garantiza (comprobado con Claude Code 2.1 y OpenCode 1.18.32):**
+- `CLAUDE.md` está en `.claude/`: Claude Code lo carga y, al existir, no lee `AGENTS.md`;
+  OpenCode solo usa `CLAUDE.md` de la raíz como respaldo, así que no lo ve.
+- OpenCode descubre skills en `.claude/skills/` y `~/.claude/skills/` y no hay opción en
+  `opencode.json` para impedirlo. Se neutraliza con skills propias en `.opencode/skills/` (tienen
+  prioridad para el mismo nombre) y una allowlist en `permission.skill` con `"*": "deny"`.
+  `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` evita además el descubrimiento.
+- OpenCode V1 no carga `.claude/agents/` ni `.claude/commands/` (comprobado con `opencode debug`).
+- `npm run validar` falla si un archivo de un ecosistema referencia al otro, y `npm test` comprueba
+  que las dos copias de `reglas.mjs` aplican la misma política.
+**Coste aceptado:** las skills, reglas, agentes y la lógica de protección comunes están duplicados;
+una mejora hay que aplicarla en los dos lados.
+**Descartado:** symlinks (poco fiables en Windows y git), imports cruzados y scripts de generación
+(vuelven a acoplar los ecosistemas).

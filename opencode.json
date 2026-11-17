@@ -5,14 +5,11 @@
     "memoria/personal/preferencias.md",
     "memoria/objetivos.md",
     "memoria/proyectos/activos.md",
-    ".claude/rules/seguridad.md",
-    ".claude/rules/estilo.md",
-    ".claude/rules/memoria.md",
-    ".claude/rules/workspace.md"
+    ".opencode/rules/seguridad.md",
+    ".opencode/rules/estilo.md",
+    ".opencode/rules/memoria.md",
+    ".opencode/rules/workspace.md"
   ],
-  "skills": {
-    "paths": [".claude/skills"]
-  },
   "permission": {
     "read": {
       "*": "allow",
@@ -31,10 +28,10 @@
     "edit": {
       "*": "allow",
       "*AGENTS.md": "ask",
-      "*CLAUDE.md": "ask",
       "*opencode.json": "ask",
-      "*.claude/*": "ask",
       "*.opencode/*": "ask",
+      "*CLAUDE.md": "ask",
+      "*.claude/*": "ask",
       "*.env": "deny",
       "*.env.*": "deny",
       "*secrets/*": "deny",
@@ -62,12 +59,12 @@
       "sudo *": "deny"
     },
     "skill": {
-      "*": "allow",
-      "conocerme": "deny",
-      "estudiar": "deny",
-      "guardar": "deny",
-      "revisar-proyectos": "deny",
-      "cerrar-sesion": "deny"
+      "*": "deny",
+      "aprender": "allow",
+      "investigar": "allow",
+      "organizar": "allow",
+      "crear-proyecto": "allow",
+      "gestionar-memoria": "allow"
     },
     "external_directory": "ask",
     "webfetch": "allow",

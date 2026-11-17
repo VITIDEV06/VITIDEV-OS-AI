@@ -1,6 +1,6 @@
 # Changelog
 
-Todos los cambios relevantes de VITIDEV IA OS se documentan en este archivo.
+Todos los cambios relevantes de VITIDEV OS AI se documentan en este archivo.
 
 El formato se basa en [Keep a Changelog 1.1.0](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto sigue [Versionado Semántico 2.0.0](https://semver.org/lang/es/):
@@ -13,29 +13,47 @@ Secciones por versión: `Añadido`, `Cambiado`, `Obsoleto`, `Eliminado`, `Correg
 
 ## [Sin publicar]
 
-Preparación del repositorio para su publicación como proyecto educativo de código abierto.
+Preparación del repositorio para su publicación como proyecto educativo de código abierto y
+separación de Claude Code y OpenCode en dos ecosistemas independientes.
 
 ### Añadido
 
 - `LICENSE`: licencia MIT (2026, Victor Montes).
 - `CONTRIBUTING.md`, `SECURITY.md` y `CODE_OF_CONDUCT.md` (adaptación de Contributor Covenant 2.1).
 - Documentación educativa en `docs/`: `PRIMEROS-PASOS.md`, `FAQ.md`, `GLOSARIO.md`,
-  `ESTRUCTURA-DEL-PROYECTO.md` y `PRIVACIDAD-Y-MEMORIA.md`.
+  `PRIVACIDAD-Y-MEMORIA.md`, `ARCHITECTURE.md` (antes `ESTRUCTURA-DEL-PROYECTO.md`),
+  `CLAUDE-CODE.md` y `OPENCODE.md`.
 - Plantillas de GitHub: informe de error, propuesta de funcionalidad y Pull Request.
+- Ecosistema OpenCode propio: `.opencode/rules/`, `.opencode/skills/` (5 skills) y `.opencode/lib/`
+  (`reglas.mjs`, `estado.mjs`, `adaptador.mjs`).
+- `opencode.json`: allowlist de skills en `permission.skill` (`"*": "deny"`) para que OpenCode no
+  use skills de Claude Code.
+- Validador y pruebas de independencia: fallan si un ecosistema referencia al otro.
 
 ### Cambiado
 
-- `README.md`: instalación rápida con `git clone`, configuración, documentación, solución de
-  problemas, contribuciones, licencia MIT y roadmap con cuatro estados.
+- Nombre del proyecto: VITIDEV OS AI.
+- `CLAUDE.md` pasa a `.claude/CLAUDE.md` con instrucciones propias; ya no importa `AGENTS.md`.
+- `AGENTS.md` contiene solo las instrucciones de OpenCode.
+- `.opencode/commands/` y `.opencode/agents/` son archivos propios, sin cargar skills ni reglas de
+  `.claude/`. El adaptador de OpenCode pasa de `.claude/hooks/lib/opencode.mjs` a
+  `.opencode/lib/adaptador.mjs`.
+- `opencode.json`: `instructions` apunta a `.opencode/rules/`; se elimina `skills.paths`.
+- `README.md`: rediseñado en torno a los dos ecosistemas independientes.
 - `docs/guia-taller.md`: objetivos, preparación, actividades, ejercicio final, solución de problemas
   y plan de práctica posterior, con la misma agenda de 2 horas.
 - `package.json`: campo `license` y descripción multiplataforma.
+
+### Eliminado
+
+- `scripts/sincronizar-agentes.mjs` y el script `npm run sincronizar`: los agentes de cada
+  herramienta se mantienen por separado.
 
 ### Corregido
 
 - Protección: la regla que impide borrar `memoria/` exige ahora que la orden de borrado (`rm`, `del`,
   `Remove-Item`…) esté en posición de comando. Antes bloqueaba comandos legítimos cuyo texto contenía
-  la preposición "del" seguida de "memoria". Dos pruebas nuevas (30 en total).
+  la preposición "del" seguida de "memoria". Dos pruebas nuevas.
 
 ### Seguridad
 
@@ -72,5 +90,5 @@ Primera versión, compatible con Claude Code y OpenCode V1.
 - OpenCode 1.18.32 con un modelo real: 10 de 10 pruebas obligatorias (detalle en `docs/limitaciones.md`).
 - Claude Code 2.1.x: agentes, hook `SessionStart` y bloqueo del hook `PreToolUse` en una sesión real.
 
-[Sin publicar]: https://github.com/VITIDEV06/VITIDEV-AI-OS/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/VITIDEV06/VITIDEV-AI-OS/releases/tag/v1.0.0
+[Sin publicar]: https://github.com/VITIDEV06/VITIDEV-OS-AI/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/VITIDEV06/VITIDEV-OS-AI/releases/tag/v1.0.0

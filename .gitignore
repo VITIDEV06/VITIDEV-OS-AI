@@ -16,9 +16,13 @@ credenciales/
 .opencode/package.json
 .opencode/package-lock.json
 .opencode/bun.lock
+.opencode/.gitignore
 
-# Sistema
+# Sistema, logs y caché
 node_modules/
+*.log
+npm-debug.log*
+.cache/
 .DS_Store
 Thumbs.db
 

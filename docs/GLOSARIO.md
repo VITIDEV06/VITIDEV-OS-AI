@@ -1,6 +1,6 @@
 # Glosario
 
-Conceptos que aparecen en VITIDEV IA OS, explicados para quien empieza. Cada entrada indica,
+Conceptos que aparecen en VITIDEV OS AI, explicados para quien empieza. Cada entrada indica,
 cuando aplica, dónde se ve el concepto dentro del proyecto.
 
 ## Inteligencia artificial y agentes
@@ -16,7 +16,7 @@ después. Esa capacidad le permite redactar, resumir, responder preguntas o escr
 
 ### LLM
 Siglas de *Large Language Model*, "modelo de lenguaje grande". Es un modelo de lenguaje con miles
-de millones de parámetros, como los modelos Claude. VITIDEV IA OS **no es un LLM**: lo utiliza a
+de millones de parámetros, como los modelos Claude. VITIDEV OS AI **no es un LLM**: lo utiliza a
 través de Claude Code u OpenCode.
 
 ### Agente de IA
@@ -27,7 +27,7 @@ en la memoria.
 
 ### Agente autónomo
 Agente que decide y ejecuta una secuencia larga de acciones con poca o ninguna supervisión humana.
-VITIDEV IA OS **no es autónomo por diseño**: pide aprobación antes de cambiar datos existentes y
+VITIDEV OS AI **no es autónomo por diseño**: pide aprobación antes de cambiar datos existentes y
 sus subagentes (`tutor`, `investigador`, `project-manager`) solo pueden leer.
 
 ### Subagente
@@ -37,7 +37,8 @@ contexto y devuelve un resultado. En el proyecto: `.claude/agents/`.
 ### Skill
 Archivo Markdown con un procedimiento que el agente sigue para un tipo de tarea: objetivo,
 cuándo usarlo, pasos, reglas y resultado esperado. Es una forma de "enseñar" un método al agente
-sin programar. En el proyecto: `.claude/skills/<nombre>/SKILL.md`.
+sin programar. En el proyecto: `.claude/skills/<nombre>/SKILL.md` (Claude Code) y
+`.opencode/skills/<nombre>/SKILL.md` (OpenCode).
 *Ejemplo:* la skill `investigar` obliga a citar fuentes y guardar un informe.
 
 ### Herramientas (*tools*)
@@ -47,7 +48,7 @@ cuáles requieren confirmación y cuáles se bloquean.
 
 ### MCP
 *Model Context Protocol*: estándar abierto para conectar agentes con herramientas y fuentes de datos
-externas (calendarios, bases de datos, servicios). VITIDEV IA OS **no usa MCP**: funciona solo con
+externas (calendarios, bases de datos, servicios). VITIDEV OS AI **no usa MCP**: funciona solo con
 archivos locales (decisión D1 en [decisiones.md](decisiones.md)). Más información en
 [modelcontextprotocol.io](https://modelcontextprotocol.io).
 
@@ -67,7 +68,7 @@ mensajes de la conversación y archivos leídos. El modelo **solo sabe lo que es
 
 ### Context window (ventana de contexto)
 Cantidad máxima de texto, medida en tokens, que el modelo puede tener en cuenta a la vez. Por eso
-VITIDEV IA OS solo carga al iniciar lo imprescindible (perfil, preferencias, objetivos y proyectos
+VITIDEV OS AI solo carga al iniciar lo imprescindible (perfil, preferencias, objetivos y proyectos
 activos) y lee el resto bajo demanda.
 
 ### Token
@@ -77,7 +78,7 @@ El tamaño del contexto y el coste de uso se miden en tokens.
 
 ### Memoria
 Información que sobrevive entre sesiones. Los modelos no recuerdan conversaciones anteriores por sí
-mismos; VITIDEV IA OS guarda lo importante en archivos de `memoria/` y los vuelve a cargar en cada
+mismos; VITIDEV OS AI guarda lo importante en archivos de `memoria/` y los vuelve a cargar en cada
 sesión. Detalle en [Privacidad y memoria](PRIVACIDAD-Y-MEMORIA.md).
 
 ## Formatos de archivo

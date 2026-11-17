@@ -11,7 +11,7 @@ Modo: $ARGUMENTS (por defecto `rápido`: 3 bloques; `completo`: los 4 bloques).
 
 ## Objetivo
 
-Que VITIDEV IA OS sepa quién es el usuario, cómo quiere trabajar y qué quiere lograr,
+Que VITIDEV OS AI sepa quién es el usuario, cómo quiere trabajar y qué quiere lograr,
 y que eso quede guardado en la memoria persistente.
 
 ## Procedimiento

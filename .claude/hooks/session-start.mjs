@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Hook SessionStart de VITIDEV IA OS.
+// Hook SessionStart de VITIDEV OS AI.
 // Inyecta en el contexto un resumen del estado: perfil, proyectos, plazos,
 // repasos, inbox y próximos pasos de la última sesión.
 // Nunca bloquea: ante cualquier error sale con código 0 sin salida.

@@ -1,21 +1,21 @@
-// Pruebas de la capa de compatibilidad con OpenCode:
-// adaptador de reglas, plugin, sincronización de agentes y validación de la configuración.
+// Pruebas del ecosistema OpenCode y de la independencia entre Claude Code y OpenCode:
+// adaptador de reglas, plugin, configuración y ausencia de dependencias cruzadas.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, cpSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, cpSync, writeFileSync, readFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { traducir, evaluarOpenCode } from '../.claude/hooks/lib/opencode.mjs';
-import { generarAgentesOpenCode, desincronizados, permisosDesdeHerramientas } from '../scripts/sincronizar-agentes.mjs';
+import { traducir, evaluarOpenCode } from '../.opencode/lib/adaptador.mjs';
 import { validar } from '../scripts/validar.mjs';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const d = (tool, args) => evaluarOpenCode(tool, args, RAIZ).decision;
+const leer = (p) => readFileSync(path.join(RAIZ, p), 'utf8');
 
 function copia() {
   const tmp = mkdtempSync(path.join(tmpdir(), 'vitidev-oc-'));
-  cpSync(RAIZ, tmp, { recursive: true, filter: (s) => !s.includes('node_modules') });
+  cpSync(RAIZ, tmp, { recursive: true, filter: (s) => !s.includes('node_modules') && !s.includes(`${path.sep}.git`) });
   return tmp;
 }
 
@@ -26,7 +26,7 @@ test('adaptador: traduce las herramientas de OpenCode al formato de las reglas',
   assert.deepEqual(traducir('webfetch', { url: 'https://x' }), []);
 });
 
-test('adaptador: aplica la misma política que el hook de Claude Code', () => {
+test('adaptador: bloquea secretos y acciones destructivas, y permite lo legítimo', () => {
   assert.equal(d('read', { filePath: path.join(RAIZ, '.env') }), 'deny');
   assert.equal(d('read', { filePath: path.join(RAIZ, 'secrets', 'x.txt') }), 'deny');
   assert.equal(d('bash', { command: 'rm -rf workspace' }), 'deny');
@@ -35,7 +35,6 @@ test('adaptador: aplica la misma política que el hook de Claude Code', () => {
   assert.equal(d('apply_patch', { patchText: '*** Update File: config/.env.local\n' }), 'deny');
   // "ask" (sobrescribir memoria con write) se convierte en bloqueo en OpenCode
   assert.equal(d('write', { filePath: path.join(RAIZ, 'memoria/objetivos.md'), content: 'x' }), 'deny');
-  // Lo legítimo se permite
   assert.equal(d('edit', { filePath: path.join(RAIZ, 'memoria/objetivos.md') }), 'allow');
   assert.equal(d('write', { filePath: path.join(RAIZ, 'workspace/inbox/nuevo.md') }), 'allow');
   assert.equal(d('read', { filePath: path.join(RAIZ, 'memoria/personal/perfil.md') }), 'allow');
@@ -55,32 +54,62 @@ test('plugin: bloquea lanzando un error y añade el estado al prompt de sistema'
   const salida = { system: [] };
   await hooks['experimental.chat.system.transform']({}, salida);
   assert.equal(salida.system.length, 1);
-  assert.match(salida.system[0], /^\[VITIDEV IA OS\] Estado al iniciar sesión/);
+  assert.match(salida.system[0], /^\[VITIDEV OS AI\] Estado al iniciar sesión/);
 });
 
-test('sincronización: los agentes de OpenCode se generan desde los de Claude Code', () => {
-  assert.deepEqual(desincronizados(RAIZ), []);
-  const gen = generarAgentesOpenCode(RAIZ);
-  assert.equal(Object.keys(gen).length, 3);
-  const pm = gen[path.join('.opencode', 'agents', 'project-manager.md')];
-  assert.match(pm, /^mode: subagent$/m);
-  assert.match(pm, /^ {2}edit: deny$/m);
-  assert.match(pm, /^ {2}websearch: deny$/m);
-  assert.doesNotMatch(pm, /^model:/m);
-  const claude = readFileSync(path.join(RAIZ, '.claude/agents/project-manager.md'), 'utf8').replace(/\r\n/g, '\n');
-  assert.ok(pm.includes(claude.split('\n---\n')[1].trim()), 'el cuerpo debe copiarse sin cambios');
-  assert.deepEqual(permisosDesdeHerramientas('Read, Write, Bash'), {
-    edit: 'ask', bash: 'ask', webfetch: 'deny', websearch: 'deny', task: 'deny', skill: 'deny', external_directory: 'deny',
-  });
+test('independencia: el plugin y sus módulos solo importan código de .opencode y de Node.js', () => {
+  for (const f of ['.opencode/plugins/vitidev.js', '.opencode/lib/adaptador.mjs', '.opencode/lib/reglas.mjs', '.opencode/lib/estado.mjs']) {
+    for (const [, origen] of leer(f).matchAll(/from\s+'([^']+)'/g)) {
+      assert.ok(origen.startsWith('node:') || origen.startsWith('./') || origen === '../lib/adaptador.mjs' || origen === '../lib/estado.mjs',
+        `${f} importa ${origen}`);
+    }
+  }
 });
 
-test('sincronización: un cambio en el agente de Claude se detecta como desincronizado', () => {
+test('independencia: instrucciones separadas y sin imports cruzados', () => {
+  assert.equal(existsSync(path.join(RAIZ, 'CLAUDE.md')), false, 'CLAUDE.md debe estar en .claude/, no en la raíz');
+  const claude = leer('.claude/CLAUDE.md');
+  const agents = leer('AGENTS.md');
+  assert.doesNotMatch(claude, /^@.*AGENTS\.md/m, '.claude/CLAUDE.md no debe importar AGENTS.md');
+  assert.match(claude, /Reglas no negociables/);
+  assert.match(agents, /Reglas no negociables/);
+  const cfg = JSON.parse(leer('opencode.json'));
+  assert.ok(cfg.instructions.every((i) => !i.startsWith('.claude/')), 'opencode.json no debe cargar reglas de .claude/');
+  assert.equal(cfg.skills, undefined, 'opencode.json no debe registrar rutas de skills de Claude Code');
+  assert.equal(cfg.permission.skill['*'], 'deny', 'las skills que no son de OpenCode se deniegan por defecto');
+});
+
+test('independencia: editar la skill de un ecosistema no cambia la del otro', () => {
   const tmp = copia();
   try {
-    const f = path.join(tmp, '.claude/agents/tutor.md');
-    writeFileSync(f, readFileSync(f, 'utf8') + '\nNueva instrucción.\n');
-    assert.deepEqual(desincronizados(tmp), ['.opencode/agents/tutor.md']);
-    assert.match(validar(tmp).errores.join('\n'), /tutor\.md no está sincronizado/);
+    const cc = path.join(tmp, '.claude/skills/aprender/SKILL.md');
+    const oc = path.join(tmp, '.opencode/skills/aprender/SKILL.md');
+    const antes = readFileSync(oc, 'utf8');
+    writeFileSync(cc, readFileSync(cc, 'utf8') + '\nSolo para Claude Code.\n');
+    assert.equal(readFileSync(oc, 'utf8'), antes);
+    assert.deepEqual(validar(tmp).errores, []);
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test('validador: detecta dependencias cruzadas entre ecosistemas', () => {
+  const tmp = copia();
+  try {
+    const cfgPath = path.join(tmp, 'opencode.json');
+    const cfg = JSON.parse(readFileSync(cfgPath, 'utf8'));
+    cfg.instructions.push('.claude/rules/estilo.md');
+    cfg.skills = { paths: ['.claude/skills'] };
+    writeFileSync(cfgPath, JSON.stringify(cfg));
+    const plugin = path.join(tmp, '.opencode/plugins/vitidev.js');
+    writeFileSync(plugin, readFileSync(plugin, 'utf8').replace("'../lib/estado.mjs'", "'../../.claude/hooks/lib/estado.mjs'"));
+    const claudeMd = path.join(tmp, '.claude/CLAUDE.md');
+    writeFileSync(claudeMd, readFileSync(claudeMd, 'utf8') + '\n@../AGENTS.md\n');
+    const txt = validar(tmp).errores.join('\n');
+    assert.match(txt, /opencode\.json carga \.claude\/rules\/estilo\.md/);
+    assert.match(txt, /opencode\.json carga \.claude\/skills/);
+    assert.match(txt, /vitidev\.js:\d+ usa un recurso de Claude Code/);
+    assert.match(txt, /\.claude\/CLAUDE\.md importa AGENTS\.md/);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
@@ -92,25 +121,17 @@ test('validador: detecta errores en la configuración de OpenCode', () => {
     const cfgPath = path.join(tmp, 'opencode.json');
     const cfg = JSON.parse(readFileSync(cfgPath, 'utf8'));
     cfg.model = 'anthropic/claude-sonnet-5-5';
-    cfg.instructions = cfg.instructions.filter((i) => i !== 'memoria/objetivos.md');
-    delete cfg.permission.skill.conocerme;
+    delete cfg.permission.skill['*'];
     writeFileSync(cfgPath, JSON.stringify(cfg));
     writeFileSync(path.join(tmp, '.opencode/commands/guardar.md'), '---\ndescription: x\n---\nsin argumentos\n');
+    const ag = path.join(tmp, '.opencode/agents/tutor.md');
+    writeFileSync(ag, readFileSync(ag, 'utf8').replace('mode: subagent', 'mode: subagent\ntools: Read'));
     const txt = validar(tmp).errores.join('\n');
     assert.match(txt, /no fijes "model"/);
-    assert.match(txt, /La memoria cargada no coincide/);
-    assert.match(txt, /permission\.skill\.conocerme debe ser "deny"/);
+    assert.match(txt, /permission\.skill debe empezar por "\*": "deny"/);
     assert.match(txt, /guardar\.md: no pasa \$ARGUMENTS/);
-    assert.match(txt, /guardar\.md: no menciona la skill `guardar`/);
+    assert.match(txt, /tutor\.md: usa permission, no tools/);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
-});
-
-test('fuente única: CLAUDE.md importa AGENTS.md y no repite sus instrucciones', () => {
-  const claude = readFileSync(path.join(RAIZ, 'CLAUDE.md'), 'utf8');
-  const agents = readFileSync(path.join(RAIZ, 'AGENTS.md'), 'utf8');
-  assert.match(claude, /^@AGENTS\.md$/m);
-  assert.match(agents, /Reglas no negociables/);
-  assert.doesNotMatch(claude, /Reglas no negociables/);
 });

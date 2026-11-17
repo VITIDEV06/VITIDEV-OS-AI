@@ -122,7 +122,7 @@ const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', '
 export function formatear(e) {
   const l = [];
   const diaSemana = DIAS[new Date(e.hoy + 'T12:00:00').getDay()] || '';
-  l.push(`[VITIDEV IA OS] Estado al iniciar sesión — hoy es ${diaSemana} ${e.hoy}.`);
+  l.push(`[VITIDEV OS AI] Estado al iniciar sesión — hoy es ${diaSemana} ${e.hoy}.`);
   if (!e.perfilCompleto) l.push('- Perfil del usuario sin completar: sugiere ejecutar /conocerme.');
   l.push(`- Proyectos: ${e.activos.length} activo(s), ${e.nPausados} pausado(s), ${e.nFinalizados} finalizado(s).`);
   for (const p of e.activos) l.push(`  • ${p.slug}${p.proximo ? ` — próximo paso: ${p.proximo}` : ''}`);

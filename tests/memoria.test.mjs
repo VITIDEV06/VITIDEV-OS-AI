@@ -119,7 +119,7 @@ test('integración: el hook SessionStart produce JSON con additionalContext', ()
   const out = JSON.parse(r.stdout);
   assert.equal(out.hookSpecificOutput.hookEventName, 'SessionStart');
   const ctx = out.hookSpecificOutput.additionalContext;
-  assert.match(ctx, /\[VITIDEV IA OS\]/);
+  assert.match(ctx, /\[VITIDEV OS AI\]/);
   assert.match(ctx, /base-de-datos — próximo paso: Hacer diagrama ER/);
   assert.match(ctx, /Pendiente: Terminar diagrama ER/);
   assert.match(ctx, /Repasos pendientes: Derivadas parciales/);

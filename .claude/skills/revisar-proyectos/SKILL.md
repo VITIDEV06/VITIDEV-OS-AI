@@ -15,8 +15,8 @@ Dar al usuario una visión honesta del estado de sus proyectos y un plan de prio
 
 ## Procedimiento
 
-1. **Delegar la auditoría** en el agente `project-manager` (herramienta de subagentes:
-   `Agent` en Claude Code, `task` en OpenCode; `subagent_type: project-manager`). Indícale el ámbito y la fecha de hoy. Te devolverá un
+1. **Delegar la auditoría** en el agente `project-manager` (herramienta `Agent`,
+   `subagent_type: project-manager`). Indícale el ámbito y la fecha de hoy. Te devolverá un
    informe con: estado de cada proyecto, tareas abiertas/cerradas, próximo paso, fechas límite,
    riesgos e incoherencias entre registro y ficha, y propuestas de cambio.
 2. **Presentar** el informe al usuario de forma compacta:

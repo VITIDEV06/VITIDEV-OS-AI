@@ -1,4 +1,4 @@
-# Guía del taller: "Tu propio agente de IA con VITIDEV IA OS" (2 horas)
+# Guía del taller: "Tu propio agente de IA con VITIDEV OS AI" (2 horas)
 
 Guía para el instructor y material de referencia para los participantes.
 
@@ -46,14 +46,14 @@ programar; ayuda haber usado una terminal alguna vez.
 - [ ] Sesión nueva de Claude Code abierta en la carpeta: `/agents` muestra los 3 agentes.
 - [ ] Si se usa OpenCode: `npm run probar:opencode` sin fallos y un modelo elegido con `/models`.
 - [ ] Copia limpia de la carpeta para la demo (la memoria empieza vacía). Nunca uses tu copia personal.
-- [ ] Pregunta de control: "¿cuáles son tus reglas no negociables?" responde con las de `AGENTS.md`.
+- [ ] Pregunta de control: "¿cuáles son tus reglas no negociables?" responde con las de `.claude/CLAUDE.md` (Claude Code) o `AGENTS.md` (OpenCode).
 
 ## Agenda
 
 | Tiempo | Bloque | Qué se hace | Resultado del bloque |
 |---|---|---|---|
 | 0:00–0:15 | 1. ¿Qué es un agente personal? | Problema: el chat olvida. Idea: contexto + memoria + habilidades + reglas. Mostrar el diagrama de arquitectura del README | Entienden las cuatro piezas |
-| 0:15–0:30 | 2. Recorrido por la carpeta | `AGENTS.md`, `CLAUDE.md` (imports `@`), `memoria/`, `workspace/`, `.claude/`. Abrir un `SKILL.md` y un agente | Saben dónde está cada pieza |
+| 0:15–0:30 | 2. Recorrido por la carpeta | `.claude/` (Claude Code) frente a `AGENTS.md`, `opencode.json` y `.opencode/` (OpenCode); `memoria/` y `workspace/` como datos comunes. Abrir un `SKILL.md` y un agente | Saben dónde está cada pieza |
 | 0:30–0:50 | 3. Identidad y memoria | Cada participante ejecuta `/conocerme`. Ver cómo cambian `perfil.md` y `objetivos.md`. Probar `/guardar` y "¿qué sabes de mí?" | Perfil completo y un dato guardado |
 | 0:50–1:05 | 4. Proyectos | `/crear-proyecto` con un proyecto real. `/organizar` sobre `workspace/inbox/ejemplo-notas-sueltas.md`. `/revisar-proyectos` (agente `project-manager`) | Un proyecto registrado y el inbox clasificado |
 | 1:05–1:10 | Pausa | | |
@@ -80,7 +80,8 @@ programar; ayuda haber usado una terminal alguna vez.
 **Enunciado:** crea una skill que resuelva una tarea que repites cada semana.
 
 1. Elige una idea: `resumir-clase`, `preparar-examen`, `plan-semanal` o una propia.
-2. Crea `.claude/skills/<nombre>/SKILL.md` siguiendo el ejemplo de
+2. Crea `.claude/skills/<nombre>/SKILL.md` o `.opencode/skills/<nombre>/SKILL.md` (según la
+   herramienta) siguiendo el ejemplo de
    [Primeros pasos, paso 10](PRIMEROS-PASOS.md#10-crea-tu-primera-skill).
 3. Ejecuta `npm test` y corrige lo que indique el validador.
 4. Abre una sesión nueva y pide la tarea con tus palabras.
@@ -139,7 +140,7 @@ Una propuesta de cuatro semanas para convertir el sistema en un hábito:
 | Recurso | Para qué |
 |---|---|
 | [Glosario](GLOSARIO.md) | Repasar los conceptos del taller |
-| [Estructura del proyecto](ESTRUCTURA-DEL-PROYECTO.md) | Saber qué se puede modificar |
+| [Arquitectura](ARCHITECTURE.md) | Saber qué se puede modificar |
 | [Decisiones técnicas](decisiones.md) | Entender por qué el sistema está diseñado así |
 | [Documentación de Claude Code](https://code.claude.com/docs/en/overview) | Skills, subagentes y hooks en profundidad |
 | [Documentación de OpenCode](https://opencode.ai/docs/) | Agentes, comandos, permisos y plugins |
